@@ -4,11 +4,12 @@ const restricted = require('../auth/restricted-middleware.js');
 
 router.get('/', restricted, (req, res) => {
   console.log(req.user);
+  const id = req.user.id
 
   Recipes
     .getRecipes(req.user.id)
     .then(recipes => {
-      res.status(200).json(recipes);
+      res.status(200).json({recipes, id});
     })
     .catch(err => {
       console.log(err);
@@ -31,14 +32,16 @@ router.get('/:id', restricted, (req, res) => {
 
 router.post('/', restricted, (req, res) => {
   const recipe = req.body;
+  const id = req.user.id
   console.log(recipe);
 
   Recipes
-    .addRecipe(recipe)
-    .then(res => {
-      res.status(200).json(res);
+    .addRecipe(recipe, id)
+    .then(recipes => {
+      res.status(200).json(recipes);
     })
     .catch(err => {
+      console.log(err)
       res.status(500).json({err})
     })
 })
@@ -58,7 +61,7 @@ router.delete('/:id', restricted, (req, res) => {
 router.put('/:id', restricted, (req, res) => {
   const { id } = req.params;
   console.log(req.body);
-  
+
   Recipes
     .updateRecipe(id, req.body)
     .then(result => {

@@ -10,7 +10,7 @@ module.exports = {
 };
 
 async function getRecipes(userId) {
-  const recipes = await db('recipes').where({user_id: userId});
+  const recipes = await db('recipes').where({'recipes.user_id': userId});
   
   const ingredients = await db('ingredients')
     .join('recipes', 'recipes.id', 'ingredients.recipe_id')
@@ -72,14 +72,32 @@ async function getRecipeById(id) {
 
 async function addRecipe(recipe, userId) {
 
+  const ingredients = recipe.ingredients;
 
-  const recipeInsert = {...recipe, recipe_id: userId};
+  console.log(ingredients)
 
-  console.log(recipeInsert)
+  await ingredients.forEach(async ingredient => {
+    console.log(ingredient);
+    ingredientInsert = {name: ingredient, recipe_id: userId}
+    await db('ingredients').insert(ingredientInsert)
+  });
+
+  const instructions = {...recipe.instructions, recipe_id: userId}
+
+
+  const tags = {...recipe.tags, recipe_id: userId}
+
+  const recipeInsert = { user_id: userId, title: recipe.title, source: recipe.source, notes: recipe.notes }
   
   await db('recipes').insert(recipeInsert);
 
-  return db.getAllRecipes(userId);
+  // await db('ingredients').insert(ingredients)
+
+  // await db('instructions').insert(instructions)
+
+  // await db('tags').insert(tags)
+
+  return getRecipes(userId);
 }
 
 function deleteRecipe(id) {
