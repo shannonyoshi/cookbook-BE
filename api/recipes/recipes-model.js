@@ -4,21 +4,33 @@ const db = require('../../data/dbConfig.js');
 module.exports = {
   getRecipes,
   getRecipeById,
-  addRecipe
-  // removeRecipe,
-  // updateRecipe
+  addRecipe,
+  deleteRecipe,
+  updateRecipe
 };
 
-async function getRecipes() {
-  const recipes = await db('recipes');
-  console.log(recipes);
+async function getRecipes(userId) {
+  const recipes = await db('recipes').where({user_id: userId});
   
-  await recipes.forEach(recipe => {
-    recipe.ingredients = recipe.ingredients.split(', ')
-  }) 
+  const ingredients = await db('ingredients')
+    .join('recipes', 'recipes.id', 'ingredients.recipe_id')
+    .select('ingredients.name')
+    .where({'ingredients.recipe_id': userId });
 
-  const result = [ ...recipes ];
-  console.log(result)
+  const instructions = await db('instructions')
+    .join('recipes', 'recipes.id', 'instructions.recipe_id')
+    .select('instructions.name')
+    .where({'instructions.recipe_id': userId });
+
+  const tags = await db('tags')
+    .join('recipes', 'recipes.id', 'tags.recipe_id')
+    .select('tags.tag')
+    .where({'tags.recipe_id': userId });
+
+  const result = recipes.map(recipe => {
+    return { ...recipe, ingredients, instructions, tags }
+  });
+
   return result;
 };
 
@@ -27,21 +39,49 @@ async function getRecipeById(id) {
   .where({id})
   .first();
 
- const ingredients = recipe.ingredients.split(', ');
+  const ingredients = await db('ingredients')
+    .join('recipes', 'recipes.id', 'ingredients.recipe_id')
+    .select('ingredients.name')
+    .where({'ingredients.recipe_id': id });
 
-  const result = { ...recipe, ingredients}
+  const instructions = await db('instructions')
+    .join('recipes', 'recipes.id', 'instructions.recipe_id')
+    .select('instructions.name')
+    .where({'instructions.recipe_id': id });
+
+  const tags = await db('tags')
+    .join('recipes', 'recipes.id', 'tags.recipe_id')
+    .select('tags.tag')
+    .where({'tags.recipe_id': id});
+
+  const result = { ...recipe, ingredients, instructions, tags }
   return result;
 };
 
-async function addRecipe(recipe) {
-  const ingredients = recipe.ingredients.join(', ');
+async function addRecipe(recipe, userId) {
 
-  console.log(ingredients);
+  const recipeInsert = {...recipe, recipe_id: userId};
 
-  const recipeInsert = {...recipe, ingredients};
   console.log(recipeInsert)
   
   await db('recipes').insert(recipeInsert);
 
-  return db.getAllRecipes();
+  return db.getAllRecipes(userId);
+}
+
+function deleteRecipe(id) {
+  return db('recipes')
+    .where({id})
+    .del()
+}
+
+function updateRecipe(id, changes) {
+  const ingredients = changes.ingredients.join(', ');
+
+  const changesUpdate = {...changes, ingredients};
+
+  console.log(changesUpdate)
+  return db('recipes')
+    .where({id})
+    .update(changesUpdate)
 }

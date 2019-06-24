@@ -36,34 +36,62 @@ exports.up = async function(knex, Promise) {
       .unique();
     
     tbl.string('source');
-
-    tbl.string('ingredients').notNullable();
-
-    tbl.string('instructions').notNullable();
-
-    tbl.string('category').notNullable();
   });
 
-  // await knex.schema.createTable('ingredients', tbl => {
-  //   tbl.increments();
+  await knex.schema.createTable('ingredients', tbl => {
+    tbl.increments();
 
-  //   tbl
-  //     .integer('recipe_id')
-  //     .notNullable()
-  //     .references('id')
-  //     .inTable('recipes')
-  //     .onDelete('CASCADE')
-  //     .onUpdate('CASCADE')
+    tbl
+      .integer('recipe_id')
+      .notNullable()
+      .references('id')
+      .inTable('recipes')
+      .onDelete('CASCADE')
+      .onUpdate('CASCADE')
 
-  //   tbl
-  //     .string('name')
-  //     .notNullable();
-  // });
+    tbl
+      .string('name')
+      .notNullable();
+  });
+
+  await knex.schema.createTable('instructions', tbl => {
+    tbl.increments();
+
+    tbl
+      .integer('recipe_id')
+      .notNullable()
+      .references('id')
+      .inTable('recipes')
+      .onDelete('CASCADE')
+      .onUpdate('CASCADE')
+
+    tbl
+      .string('name')
+      .notNullable();
+  });
+
+  await knex.schema.createTable('tags', tbl => {
+    tbl.increments();
+
+    tbl
+      .integer('recipe_id')
+      .notNullable()
+      .references('id')
+      .inTable('recipes')
+      .onDelete('CASCADE')
+      .onUpdate('CASCADE')
+
+    tbl
+      .string('tag')
+      .notNullable();
+  });
 }
 
 exports.down = function(knex, Promise) {
   return knex.schema
     .dropTableIfExists('users')
     .dropTableIfExists('recipes')
-    .dropTableIfExists('ingredients');
+    .dropTableIfExists('ingredients')
+    .dropTableIfExists('instructions')
+    .dropTableIfExists('tags');
 };
