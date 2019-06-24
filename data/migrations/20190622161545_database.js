@@ -36,6 +36,8 @@ exports.up = async function(knex, Promise) {
       .unique();
     
     tbl.string('source');
+
+    tbl.string('notes');
   });
 
   await knex.schema.createTable('ingredients', tbl => {

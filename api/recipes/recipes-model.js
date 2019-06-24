@@ -15,12 +15,18 @@ async function getRecipes(userId) {
   const ingredients = await db('ingredients')
     .join('recipes', 'recipes.id', 'ingredients.recipe_id')
     .select('ingredients.name')
-    .where({'ingredients.recipe_id': userId });
+    .where({'ingredients.recipe_id': userId })
+    .map(ingredient => {
+      return ingredient.name
+    });
 
   const instructions = await db('instructions')
     .join('recipes', 'recipes.id', 'instructions.recipe_id')
     .select('instructions.name')
-    .where({'instructions.recipe_id': userId });
+    .where({'instructions.recipe_id': userId })
+    .map(instruction => {
+      return instruction.name;
+    });
 
   const tags = await db('tags')
     .join('recipes', 'recipes.id', 'tags.recipe_id')
@@ -42,12 +48,18 @@ async function getRecipeById(id) {
   const ingredients = await db('ingredients')
     .join('recipes', 'recipes.id', 'ingredients.recipe_id')
     .select('ingredients.name')
-    .where({'ingredients.recipe_id': id });
+    .where({'ingredients.recipe_id': id })
+    .map(ingredient => {
+      return ingredient.name;
+    });
 
   const instructions = await db('instructions')
     .join('recipes', 'recipes.id', 'instructions.recipe_id')
     .select('instructions.name')
-    .where({'instructions.recipe_id': id });
+    .where({'instructions.recipe_id': id })
+    .map(instruction => {
+      return instruction.name;
+    });
 
   const tags = await db('tags')
     .join('recipes', 'recipes.id', 'tags.recipe_id')
@@ -59,6 +71,7 @@ async function getRecipeById(id) {
 };
 
 async function addRecipe(recipe, userId) {
+
 
   const recipeInsert = {...recipe, recipe_id: userId};
 
