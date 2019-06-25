@@ -145,24 +145,28 @@ async function updateRecipe(recipeId, userId, changes) {
   const originalIngredients = await db('ingredients')
     .join('recipes', 'recipes.id', 'ingredients.recipe_id')
     .select('ingredients.*')
-    .where({'ingredients.recipe_id': recipeId });
+    .where({'ingredients.recipe_id': recipeId })
+    .map(ingredient => {
+      return ingredient.name;
+    });
+
+  const originalInstructions = await db('instructions')
+    .join('recipes', 'recipes.id', 'instructions.recipe_id')
+    .select('instructions.*')
+    .where({'instructions.recipe_id': recipeId })
+    .map(instructions => {
+      return instructions.name;
+  });
+
+  const originalTags = await db('tags')
+    .join('recipes', 'recipes.id', 'tags.recipe_id')
+    .select('tags.*')
+    .where({'tags.recipe_id': recipeId })
+    .map(tag => {
+      return tag.name;
+  });
 
   
-
-  // const instructions = await db('instructions')
-  //   .join('recipes', 'recipes.id', 'instructions.recipe_id')
-  //   .where({'instructions.recipe_id': recipeId})
-  //   .first();
-
-  // const tags = await db('tags')
-  //   .join('recipes', 'recipes.id', 'tags.recipe_id')
-  //   .where({'tags.recipe_id': recipeId})
-  //   .first();
-
-  // const ingredientsUpdate = { ...ingredients,  }
-  // const instructionsUpdate = { ... instructions,  }
-  // const tagsUpdate = { ...tags, }
-
   const recipeUpdate = { ...recipe, title: changes.title, source: changes.source, notes: changes.notes }
   
   if(recipe) {
@@ -171,32 +175,47 @@ async function updateRecipe(recipeId, userId, changes) {
       .first()
       .update(recipeUpdate);
 
-    changes.ingredients.forEach(async ingredient => {
-      
-
-      console.log(originalIngredients);
-      
-      let ingredientUpdate = { ...originalIngredient, name: ingredient };
-
+    if(originalIngredients !== changes.ingredients) {
+      console.log('ARRAYS NOT THE SAME');
       await db('ingredients')
-        .join('recipes', 'recipes.id', 'ingredients.recipe_id')
-        .where({'ingredients.recipe_id': recipeId, 'ingredients.name': ingredient})
-        .update(ingredientUpdate);
-    });
+      .join('recipes', 'recipes.id', 'ingredients.recipe_id')
+      .select('ingredients.*')
+      .where({'ingredients.recipe_id': recipeId })
+      .del();
     
-    // changes.instructions.forEach(async instruction => {
-    //   await db('instructions')
-    //     .join('recipes', 'recipes.id', 'instructions.recipe_id')
-    //     .where({'instructions.recipe_id': recipeId, 'instructions.name': instruction})
-    //     .update(instruction)
-    // });
+      changes.ingredients.forEach(async ingredient => {
+        ingredientInsert = {name: ingredient, recipe_id: recipeId }
+        await db('ingredients').insert(ingredientInsert)
+      });
+    };
+
+    if(originalInstructions !== changes.instructions) {
+      console.log('ARRAYS NOT THE SAME');
+      await db('instructions')
+      .join('recipes', 'recipes.id', 'instructions.recipe_id')
+      .select('instructions.*')
+      .where({'instructions.recipe_id': recipeId })
+      .del();
     
-    // changes.tags.forEach(async tag => {
-    //   await db('tags')
-    //     .join('recipes', 'recipes.id', 'tags.recipe_id')
-    //     .where({'tags.recipe_id': recipeId, 'tags.tag': tag})
-    //     .update(tag)
-    // });
+      changes.instructions.forEach(async instruction => {
+        instructionInsert = {name: instruction, recipe_id: recipeId }
+        await db('instructions').insert(instructionInsert)
+      });
+    };
+
+    if(originalTags !== changes.tags) {
+      console.log('ARRAYS NOT THE SAME');
+      await db('tags')
+        .join('recipes', 'recipes.id', 'tags.recipe_id')
+        .select('tags.*')
+        .where({'tags.recipe_id': recipeId })
+        .del();
+    
+      changes.tags.forEach(async tag => {
+        tagInsert = {tag: tag, recipe_id: recipeId }
+        await db('tags').insert(tagInsert)
+      });
+    };
   };
 
 };
