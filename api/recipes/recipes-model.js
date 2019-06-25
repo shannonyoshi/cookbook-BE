@@ -10,7 +10,7 @@ module.exports = {
 };
 
 async function getRecipes(userId) {
-  const recipes = await db('recipes').where({'recipes.user_id': userId});
+  // const recipes = await db('recipes').where({'recipes.user_id': userId});
   
   // const ingredients = await db('recipes')
   //   .join('ingredients', 'ingredients.recipe_id', 'recipes.id')
@@ -75,7 +75,7 @@ async function getRecipeById(id) {
     .where({'tags.recipe_id': id})
     .map(tag => {
       return tag.tag;
-    })
+    });
 
   const result = { ...recipe, ingredients, instructions, tags }
   return result;
@@ -85,32 +85,27 @@ async function addRecipe(recipe, userId) {
 
   const ingredients = recipe.ingredients;
   const instructions = recipe.instructions;
-
-  console.log(ingredients)
-
-  await ingredients.forEach(async ingredient => {
-    console.log(ingredient);
-    ingredientInsert = {name: ingredient, recipe_id: userId}
-    await db('ingredients').insert(ingredientInsert)
-  });
-
-  await instructions.forEach(async instruction => {
-    console.log(ingredient);
-    instructionInsert = {name: instruction, recipe_id: userId}
-    await db('instructions').insert(instructionInsert);
-  });
-
-  const tags = {...recipe.tags, recipe_id: userId}
+  const tags = recipe.tags;
 
   const recipeInsert = { user_id: userId, title: recipe.title, source: recipe.source, notes: recipe.notes }
   
-  await db('recipes').insert(recipeInsert);
+  const newRecipe = await db('recipes').insert(recipeInsert);
+  console.log(newRecipe);
 
-  // await db('ingredients').insert(ingredients)
+  ingredients.forEach(async ingredient => {
+    ingredientInsert = {name: ingredient, recipe_id: newRecipe[0] }
+    await db('ingredients').insert(ingredientInsert)
+  });
 
-  // await db('instructions').insert(instructions)
+  instructions.forEach(async instruction => {
+    instructionInsert = {name: instruction, recipe_id: newRecipe[0] }
+    await db('instructions').insert(instructionInsert)
+  });
 
-  // await db('tags').insert(tags)
+  tags.forEach(async tag => {
+    tagInsert = {tag: tag, recipe_id: newRecipe[0] }
+    await db('tags').insert(tagInsert)
+  });
 
   return getRecipes(userId);
 }
@@ -122,12 +117,10 @@ function deleteRecipe(id) {
 }
 
 function updateRecipe(id, changes) {
-  const ingredients = changes.ingredients.join(', ');
-
-  const changesUpdate = {...changes, ingredients};
 
   console.log(changesUpdate)
   return db('recipes')
     .where({id})
     .update(changesUpdate)
 }
+
