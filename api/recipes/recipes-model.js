@@ -62,24 +62,24 @@ async function getRecipeById(recipeId, userId) {
       return ingredient.name;
     });
 
-  const instructions = await db('instructions')
-    .join('recipes', 'recipes.id', 'instructions.recipe_id')
-    .select('instructions.name')
-    .where({'instructions.recipe_id': recipeId })
-    .map(instruction => {
-      return instruction.name;
-    });
+    const instructions = await db('instructions')
+      .join('recipes', 'recipes.id', 'instructions.recipe_id')
+      .select('instructions.name')
+      .where({'instructions.recipe_id': recipeId })
+      .map(instruction => {
+        return instruction.name;
+      });
 
-  const tags = await db('tags')
-    .join('recipes', 'recipes.id', 'tags.recipe_id')
-    .select('tags.tag')
-    .where({'tags.recipe_id': recipeId})
-    .map(tag => {
-      return tag.tag;
-    });
+    const tags = await db('tags')
+      .join('recipes', 'recipes.id', 'tags.recipe_id')
+      .select('tags.tag')
+      .where({'tags.recipe_id': recipeId})
+      .map(tag => {
+        return tag.tag;
+      });
 
-  const result = { ...recipe, ingredients, instructions, tags }
-  return result;
+    const result = { ...recipe, ingredients, instructions, tags }
+    return result;
   } else {
     return 'No such recipe for current user.'
   }
@@ -137,7 +137,40 @@ async function deleteRecipe(recipeId, userId) {
   return getRecipes(userId);
 }
 
-function updateRecipe(recipeId, changes) {
+async function updateRecipe(recipeId, userId, changes) {
+  const recipe = await db('recipes')
+    .where({'recipes.id': recipeId, 'recipes.user_id': userId})
+    .first();
 
+  const ingredientsUpdate = recipe.ingredients;
+  const instructionsUpdate = recipe.instructions;
+  const tagsUpdate = recipe.tags;
+
+  const recipeUpdate = { user_id: userId, title: recipe.title, source: recipe.source, notes: recipe.notes }
   
+  if(recipe) {
+    await db('recipes')
+      .where({'recipes.id': recipeId})
+      .first()
+      .update(recipeUpdate);
+
+    await db('ingredients')
+      .join('recipes', 'recipes.id', 'ingredients.recipe_id')
+      .where({'ingredients.recipe_id': recipeId})
+      .first()
+      .update(ingredientsUpdate)
+
+    await db('instructions')
+      .join('recipes', 'recipes.id', 'instructions.recipe_id')
+      .where({'instructions.recipe_id': recipeId})
+      .first()
+      .update(instructionsUpdate)
+    
+    await db('tags')
+      .join('recipes', 'recipes.id', 'tags.recipe_id')
+      .where({'tags.recipe_id': recipeId})
+      .first()
+      .update(tagsUpdate)
+  };
+
 };
