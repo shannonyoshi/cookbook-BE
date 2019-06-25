@@ -14,4 +14,8 @@ server.use('/auth', authRouter);
 
 server.use('/recipes', recipesRouter);
 
+server.get('/', (req, res) => {
+  res.send('Server running...');
+ });
+
 module.exports = server;
