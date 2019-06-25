@@ -40,7 +40,7 @@ router.post('/', restricted, (req, res) => {
   Recipes
     .addRecipe(recipe, id)
     .then(recipes => {
-      res.status(200).json(recipes);
+      res.status(201).json(recipes);
     })
     .catch(err => {
       // s
@@ -56,7 +56,7 @@ router.delete('/:id', restricted, (req, res) => {
   Recipes
     .deleteRecipe(recipeId, userId)
     .then(recipes => {
-      res.status(200).json(recipes)
+      res.status(204).json(recipes)
     })
     .catch( err => {
       res.status(500).json({message: 'Recipe not found.'})
