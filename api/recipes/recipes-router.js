@@ -18,12 +18,13 @@ router.get('/', restricted, (req, res) => {
 })
 
 router.get('/:id', restricted, (req, res) => {
- const { id } = req.params;
+ const recipeId = req.params.id
+ const userId = req.user.id
 
   Recipes
-    .getRecipeById(id)
+    .getRecipeById(recipeId, userId)
     .then(recipe => {
-      res.status(200).json(recipe);
+      res.status(200).json({recipe});
     })
     .catch(err => {
       console.log(err);
