@@ -110,10 +110,27 @@ async function addRecipe(recipe, userId) {
   return getRecipes(userId);
 }
 
-function deleteRecipe(id) {
-  return db('recipes')
-    .where({id})
-    .del()
+async function deleteRecipe(recipeId, userId) {
+  await db('tags')
+    .join('recipes', 'recipes.id', 'tags.recipe_id')
+    .where({'tags.recipe_id': recipeId})
+    .del();
+
+  await db('instructions')
+    .join('recipes', 'recipes.id', 'instructions.recipe_id')
+    .where({'instructions.recipe_id': recipeId})
+    .del();
+
+  await db('ingredients')
+    .join('recipes', 'recipes.id', 'ingredients.recipe_id')
+    .where({'ingredients.recipe_id': recipeId})
+    .del();
+  
+  await db('recipes')
+    .where({'recipes.id': recipeId})
+    .del();
+  
+  return getRecipes(userId);
 }
 
 function updateRecipe(id, changes) {

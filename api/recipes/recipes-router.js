@@ -34,7 +34,7 @@ router.get('/:id', restricted, (req, res) => {
 router.post('/', restricted, (req, res) => {
   const recipe = req.body;
   const id = req.user.id
-  console.log(recipe);
+  // console.log(recipe);
 
   Recipes
     .addRecipe(recipe, id)
@@ -42,17 +42,20 @@ router.post('/', restricted, (req, res) => {
       res.status(200).json(recipes);
     })
     .catch(err => {
-      console.log(err)
+      // s
       res.status(500).json({err})
     })
 })
 
 router.delete('/:id', restricted, (req, res) => {
 
+  const recipeId = req.params.id;
+  const userId = req.user.id;
+
   Recipes
-    .deleteRecipe(req.params.id)
-    .then(recipe => {
-      res.status(200).json({message: `${recipe} deleted`})
+    .deleteRecipe(recipeId, userId)
+    .then(recipes => {
+      res.status(200).json(recipes)
     })
     .catch( err => {
       res.status(500).json({message: 'Recipe not found.'})
