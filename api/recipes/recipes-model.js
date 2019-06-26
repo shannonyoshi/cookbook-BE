@@ -38,9 +38,33 @@ async function getRecipes(userId) {
   // });
 
   // return result;
-
-  return db('recipes')
+  let tags = await db('recipes')
     .where({'recipes.user_id': userId})
+    .join('tags', 'tags.recipe_id', 'recipes.id')
+    .select('tags.tag as tags', 'tags.recipe_id');
+
+  let recipes = await db('recipes')
+  .where({'recipes.user_id': userId})
+  .select('recipes.*')
+
+
+  await recipes.forEach(recipe => {
+    recipe.tags = [];
+    tags.forEach(tag => {
+      if(recipe.id === tag.recipe_id) {
+        console.log(tag)
+        recipe.tags.push(tag.tags);
+      } else {
+        return false;
+      }
+    });
+  });
+
+  console.log(recipes);
+  // console.log(tags);
+
+
+  return recipes;
     // .join('ingredients', 'ingredients.recipe_id', 'recipes.id')
     // .join('instructions', 'instructions.recipe_id', 'recipes.id')
     // .join('tags', 'tags.recipe_id', 'recipes.id')
