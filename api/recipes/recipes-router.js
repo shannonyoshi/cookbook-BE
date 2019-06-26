@@ -34,11 +34,11 @@ router.get('/:id', restricted, (req, res) => {
 
 router.post('/', restricted, (req, res) => {
   const recipe = req.body;
-  const id = req.user.id
+  const userId = req.user.id
   // console.log(recipe);
 
   Recipes
-    .addRecipe(recipe, id)
+    .addRecipe(recipe, userId)
     .then(recipes => {
       res.status(201).json(recipes);
     })
