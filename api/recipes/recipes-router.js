@@ -75,6 +75,7 @@ router.put('/:id', restricted, (req, res) => {
   Recipes
     .updateRecipe(recipeId, userId, recipeUpdate)
     .then(result => {
+      console.log(result);
       if(!result) {
         res.status(404).json('No recipe found with this ID for current user.')
       } else {
