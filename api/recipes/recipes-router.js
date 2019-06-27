@@ -71,17 +71,17 @@ router.put('/:id', restricted, (req, res) => {
   const recipeId = req.params.id;
   const userId = req.user.id;
   const recipeUpdate = req.body;
-  console.log(req.body);
 
   Recipes
     .updateRecipe(recipeId, userId, recipeUpdate)
     .then(result => {
-      res.status(200).json(result);
-    })
-    .catch(err => {
       if(!result) {
         res.status(404).json('No recipe found with this ID for current user.')
-      }
+      } else {
+        res.status(200).json(result);
+      };
+    })
+    .catch(err => {
       res.status(500).json(err);
     });
 });

@@ -185,7 +185,6 @@ async function updateRecipe(recipeId, userId, changes) {
       return tag.name;
   });
 
-  
   const recipeUpdate = { ...recipe, title: changes.title, source: changes.source, notes: changes.notes }
   
   if(recipe) {
