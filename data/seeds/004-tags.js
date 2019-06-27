@@ -758,3 +758,12 @@ exports.seed = function(knex, Promise) {
       ]);
     });
 };
+
+// [
+//   '{{repeat(150)}}',
+//   {
+//     id: '{{index(1)}}',
+//     tag: "{{random('pasta', 'pie', 'salad', 'soup', 'stew', 'seafood', 'desserts')}}",
+//     recipe_id: '{{integer(1, 80)}}'
+//   }
+// ]

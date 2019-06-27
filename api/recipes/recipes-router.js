@@ -15,7 +15,7 @@ router.get('/', restricted, (req, res) => {
       console.log(err);
       res.status(500).json({err})
     });
-})
+});
 
 router.get('/:id', restricted, (req, res) => {
  const recipeId = req.params.id
@@ -24,13 +24,17 @@ router.get('/:id', restricted, (req, res) => {
   Recipes
     .getRecipeById(recipeId, userId)
     .then(recipe => {
-      res.status(200).json({recipe});
+      if(!recipe) {
+        res.status(404).json('No recipe found with this ID for current user.')
+      } else {
+        res.status(200).json({recipe});
+      }
     })
     .catch(err => {
       console.log(err);
       res.status(500).json({err})
-    })
-})
+    });
+});
 
 router.post('/', restricted, (req, res) => {
   const recipe = req.body;
@@ -45,8 +49,8 @@ router.post('/', restricted, (req, res) => {
     .catch(err => {
       // s
       res.status(500).json({err})
-    })
-})
+    });
+});
 
 router.delete('/:id', restricted, (req, res) => {
 
@@ -60,8 +64,8 @@ router.delete('/:id', restricted, (req, res) => {
     })
     .catch( err => {
       res.status(500).json({message: 'Recipe not found.'})
-    })
-})
+    });
+});
 
 router.put('/:id', restricted, (req, res) => {
   const recipeId = req.params.id;
@@ -75,10 +79,11 @@ router.put('/:id', restricted, (req, res) => {
       res.status(200).json(result);
     })
     .catch(err => {
-      console.log(err);
+      if(!result) {
+        res.status(404).json('No recipe found with this ID for current user.')
+      }
       res.status(500).json(err);
-    })
-})
-
+    });
+});
 
 module.exports = router;

@@ -65,11 +65,6 @@ async function getRecipes(userId) {
 
 
   return recipes;
-    // .join('ingredients', 'ingredients.recipe_id', 'recipes.id')
-    // .join('instructions', 'instructions.recipe_id', 'recipes.id')
-    // .join('tags', 'tags.recipe_id', 'recipes.id')
-    // .select('recipes.*', 'ingredients.*', 'instructions.*', 'tags.*')
-    // .where({'recipes.user_id': userId})
 };
 
 async function getRecipeById(recipeId, userId) {
@@ -105,7 +100,7 @@ async function getRecipeById(recipeId, userId) {
     const result = { ...recipe, ingredients, instructions, tags }
     return result;
   } else {
-    return 'No such recipe for current user.'
+    return null;
   }
 };
 
@@ -157,7 +152,7 @@ async function deleteRecipe(recipeId, userId) {
   await db('recipes')
     .where({'recipes.id': recipeId})
     .del();
-  
+
   return getRecipes(userId);
 }
 
@@ -241,7 +236,6 @@ async function updateRecipe(recipeId, userId, changes) {
       });
     };
   };
-
 };
 
 
