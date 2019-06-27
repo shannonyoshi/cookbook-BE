@@ -235,7 +235,9 @@ async function updateRecipe(recipeId, userId, changes) {
         await db('tags').insert(tagInsert)
       });
     };
-  };
+  } else { 
+    return null;
+  }
 };
 
 
