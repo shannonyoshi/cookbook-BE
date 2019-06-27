@@ -9,11 +9,10 @@ router.get('/', restricted, (req, res) => {
   Recipes
     .getRecipes(userId)
     .then(recipes => {
-      res.status(200).json({recipes});
+        res.status(200).json({recipes});
     })
     .catch(err => {
-      console.log(err);
-      res.status(500).json({err})
+      res.status(500).json({message: 'Could not retrieve recipes.'})
     });
 });
 
@@ -25,10 +24,10 @@ router.get('/:id', restricted, (req, res) => {
     .getRecipeById(recipeId, userId)
     .then(recipe => {
       if(!recipe) {
-        res.status(404).json('No recipe found with this ID for current user.')
+        res.status(404).json({message: 'No recipe found with this ID for current user.'})
       } else {
         res.status(200).json({recipe});
-      }
+      };
     })
     .catch(err => {
       console.log(err);
@@ -75,9 +74,8 @@ router.put('/:id', restricted, (req, res) => {
   Recipes
     .updateRecipe(recipeId, userId, recipeUpdate)
     .then(result => {
-      console.log(result);
       if(!result) {
-        res.status(404).json('No recipe found with this ID for current user.')
+        res.status(404).json({message: 'No recipe found with this ID for current user.'})
       } else {
         res.status(200).json(result);
       };
