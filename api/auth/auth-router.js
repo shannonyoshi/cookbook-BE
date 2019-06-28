@@ -12,11 +12,13 @@ router.post('/register', (req, res) => {
   user.password = hash;
 
   db.add(user)
-    .then(saved => {
-      res.status(201).json(saved);
+    .then(user => {
+      const token = generateToken(user); // <<<<<<<<<<<<<<<<<<<<<<<<<
+
+      res.status(201).json({username: user.username, title: user.title, tagline: user.tagline, token});
     })
     .catch(error => {
-      res.status(500).json(error);
+      res.status(500).json({message: error});
     });
 });
 

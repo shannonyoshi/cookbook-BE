@@ -10,34 +10,6 @@ module.exports = {
 };
 
 async function getRecipes(userId) {
-  // const recipes = await db('recipes').where({'recipes.user_id': userId});
-  
-  // const ingredients = await db('recipes')
-  //   .join('ingredients', 'ingredients.recipe_id', 'recipes.id')
-  //   .select('ingredients.name')
-  //   .where({'ingredients.recipe_id': userId })
-  //   .map(ingredient => {
-  //     return ingredient.name
-  //   });
-
-  // const instructions = await db('instructions')
-  //   .join('recipes', 'recipes.id', 'instructions.recipe_id')
-  //   .select('instructions.name')
-  //   .where({'instructions.recipe_id': userId })
-  //   .map(instruction => {
-  //     return instruction.name;
-  //   });
-
-  // const tags = await db('tags')
-  //   .join('recipes', 'recipes.id', 'tags.recipe_id')
-  //   .select('tags.tag')
-  //   .where({'tags.recipe_id': userId });
-
-  // const result = recipes.map(recipe => {
-  //   return { ...recipe, ingredients, instructions, tags }
-  // });
-
-  // return result;
   let tags = await db('recipes')
     .where({'recipes.user_id': userId})
     .join('tags', 'tags.recipe_id', 'recipes.id')
