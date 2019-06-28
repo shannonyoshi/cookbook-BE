@@ -16,7 +16,6 @@ router.post('/register', (req, res) => {
       res.status(201).json(saved);
     })
     .catch(error => {
-      console.log(error);
       res.status(500).json(error);
     });
 });
@@ -30,14 +29,12 @@ router.post('/login', (req, res) => {
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user); // <<<<<<<<<<<<<<<<<<<<<<<<<
 
-        res
-          .status(200)
-          .json({
-            username: user.username,
-            title: user.title,
-            tagline: user.tagline,
-            token
-          });
+        res.status(200).json({
+          username: user.username,
+          title: user.title,
+          tagline: user.tagline,
+          token
+        });
       } else {
         res.status(401).json({ message: 'Invalid Credentials' });
       }
