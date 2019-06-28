@@ -18,7 +18,7 @@ router.post('/register', (req, res) => {
       res.status(201).json({username: user.username, title: user.title, tagline: user.tagline, token});
     })
     .catch(error => {
-      res.status(500).json({message: error});
+      res.status(500).json({message: "Unable to create user."});
     });
 });
 
