@@ -13,6 +13,14 @@ module.exports = {
     },
     seeds: {
       directory: './data/seeds',
+    },
+    pool: {
+      afterCreate: (conn, done)=> {
+        conn.run("PRAGMA foreign_keys = ON", done)
+      }, 
+    },   
+    migrations: {
+      directory: "./data/migrations"
     }
   },
 
@@ -28,23 +36,18 @@ module.exports = {
       max: 10
     },
     migrations: {
-      tableName: 'knex_migrations'
+      directory: "./data/migrations"
     }
   },
 
   production: {
     client: 'postgresql',
-    connection: {
-      database: 'my_db',
-      user:     'username',
-      password: 'password'
+    connection: process.env.DATABASE_URL,
+    migratons: {
+      directory: './data/migrations'
     },
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: 'knex_migrations'
+    seeds: {
+      directory: './data/seeds'
     }
   }
 

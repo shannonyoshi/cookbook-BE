@@ -7,7 +7,7 @@ const recipesRouter = require('./api/recipes/recipes-router.js');
 const server = express();
 
 server.use(helmet());
-// server.use(cors());
+server.use(cors());
 server.use(express.json());
 
 server.use('/auth', authRouter);
