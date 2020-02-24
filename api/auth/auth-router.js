@@ -15,7 +15,7 @@ router.post('/register', (req, res) => {
     .then(user => {
       const token = generateToken(user); // <<<<<<<<<<<<<<<<<<<<<<<<<
 
-      res.status(201).json({username: user.username, title: user.title, tagline: user.tagline, token});
+      res.status(201).json({email: user.email, title: user.title, tagline: user.tagline, token});
     })
     .catch(error => {
       res.status(500).json({message: "Unable to create user."});
@@ -23,16 +23,16 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-  let { username, password } = req.body;
+  let { email, password } = req.body;
 
-  db.findBy({ username })
+  db.findBy({ email })
     .first()
     .then(user => {
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user); // <<<<<<<<<<<<<<<<<<<<<<<<<
 
         res.status(200).json({
-          username: user.username,
+          email: user.email,
           title: user.title,
           tagline: user.tagline,
           token
@@ -49,7 +49,7 @@ router.post('/login', (req, res) => {
 function generateToken(user) {
   const payload = {
     subject: user.id, // standard claim = sub
-    username: user.username
+    email: user.email
   };
 
   const options = {

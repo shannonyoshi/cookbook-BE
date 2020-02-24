@@ -15,7 +15,7 @@ Section Contents:
 Expects an object with this format as the request body:
 ```
 {
-  "username": "User1",   //string
+  "email": "User1@email.com",   //string
   "password": "password" //string
 }
 ```
@@ -25,7 +25,7 @@ Expects an object with this format as the request body:
 Expects an object with this format as the request body:
 ```
 {
-  "username": "User1",   //string
+  "email": "User1@email.com",   //string
   "password": "password" //string
 }
 ```
