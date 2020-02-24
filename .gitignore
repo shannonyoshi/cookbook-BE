@@ -3,5 +3,3 @@ node_modules
 .database.db3
 data/database.db3
 
-config/secrets.js
-secrets.js
