@@ -4,7 +4,7 @@ exports.up = async function(knex, Promise) {
     tbl.increments();
 
     tbl
-      .string('username', 255)
+      .string('email', 255)
       .notNullable()
       .unique();
 
