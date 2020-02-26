@@ -1,5 +1,5 @@
 // Update with your config settings.
-rewuire("dotenv").config()
+require("dotenv").config()
 const path = require('path')
 
 module.exports = {
