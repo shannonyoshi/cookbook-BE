@@ -1,5 +1,5 @@
 // Update with your config settings.
-
+rewuire("dotenv").config()
 const path = require('path')
 
 module.exports = {
@@ -46,7 +46,7 @@ module.exports = {
     client: 'postgresql',
     connection: process.env.DATABASE_URL,
     migratons: {
-      directory: path.normalize(path.join(__dirname, "/data/migrations"))
+      directory: './data/migrations'
     },
     seeds: {
       directory: './data/seeds'
