@@ -20,7 +20,7 @@ module.exports = {
       }, 
     },   
     migrations: {
-      directory: "./data/migrations"
+      directory: path.normalize(path.join(__dirname, "/data/migrations"))
     }
   },
 
@@ -44,7 +44,7 @@ module.exports = {
     client: 'postgresql',
     connection: process.env.DATABASE_URL,
     migratons: {
-      directory: './data/migrations'
+      directory: path.normalize(path.join(__dirname, "/data/migrations"))
     },
     seeds: {
       directory: './data/seeds'
