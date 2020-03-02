@@ -11,7 +11,7 @@ module.exports = {
     },
     useNullAsDefault: true, // needed for sqlite
     migrations: {
-      directory: './data/migrations',
+      directory: './migrations',
     },
     seeds: {
       directory: './data/seeds',
@@ -38,7 +38,7 @@ module.exports = {
       max: 10
     },
     migrations: {
-      directory: "./data/migrations"
+      directory: "./migrations"
     }
   },
 
@@ -46,7 +46,7 @@ module.exports = {
     client: 'postgresql',
     connection: process.env.DATABASE_URL,
     migratons: {
-      directory: "/app/data/migrations"
+      directory: './migrations'
     },
     seeds: {
       directory: './data/seeds'
