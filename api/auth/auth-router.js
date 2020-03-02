@@ -28,10 +28,11 @@ router.post('/register', (req, res) => {
   user.password = hash;
 
   db.add(user)
-    .then(user => {
-      const token = generateToken(user);
+    .then(added_user => {
+      console.log("ADDED_USER", added_user)
+      const token = generateToken(added_user);
 
-      res.status(201).json({email: user.email, title: user.title, tagline: user.tagline, token});
+      res.status(201).json({email: added_user.email, title: added_user.title, tagline: added_user.tagline, token});
     })
     .catch(error => {
       console.log("ERROR", error)
@@ -43,8 +44,9 @@ router.post('/login', (req, res) => {
   let { email, password } = req.body;
 
   db.findBy({ email })
-    .first()
     .then(user => {
+      user = user[0]
+      console.log("is this user an array?", user)
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user); // <<<<<<<<<<<<<<<<<<<<<<<<<
 

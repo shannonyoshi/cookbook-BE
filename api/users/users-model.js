@@ -7,18 +7,21 @@ module.exports = {
   findById
 };
 
-function find() {
-  return db('users').select('id', 'email');
+async function find() {
+  return await db('users').select('id', 'email');
 };
 
-function findBy(filter) {
-  return db('users').where(filter);
+async function findBy(filter) {
+  console.log("findBy filter", filter)
+  return await db('users').where(filter);
 };
 
 async function add(user) {
-  const id = await db('users').insert(user, ["id"]);
-  console.log("ID of new user", id)
-  return findById([id]);
+  console.log("ADD   USER", user)
+  // const id = await db('users').insert(user, ["id"]);
+  await db('users').insert(user);
+  // console.log("ID of new user", id)
+  return findBy({"email": user.email});
 };
 
 function findById(id) {

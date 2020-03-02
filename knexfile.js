@@ -22,7 +22,8 @@ module.exports = {
       }, 
     },   
     migrations: {
-      directory: path.normalize(path.join(__dirname, "/data/migrations"))
+      directory: "./migrations"
+      // directory: path.normalize(path.join(__dirname, "/data/migrations"))
     }
   },
 
